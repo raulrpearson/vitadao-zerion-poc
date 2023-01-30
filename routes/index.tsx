@@ -12,7 +12,7 @@ interface PositionsResponse {
       parent: null;
       protocol: null | "Uniswap V3" | "Bancor";
       name: "Asset";
-      type: "wallet" | "deposit" | "staked" | "reward";
+      position_type: "wallet" | "deposit" | "staked" | "reward";
       quantity: {
         "int": string;
         "decimals": number;
@@ -45,6 +45,8 @@ interface PositionsResponse {
       flags: {
         "displayable": boolean;
       };
+      "updated_at": string;
+      "updated_at_block": number;
     };
     relationships: {
       chain: {
@@ -84,8 +86,8 @@ export const handler: Handlers<UIData | null> = {
       return ctx.render(null);
     }
     const json: PositionsResponse = await resp.json();
-    const walletItems = json.data.filter(({ attributes: { type } }) =>
-      type === "wallet"
+    const walletItems = json.data.filter(({ attributes: { position_type } }) =>
+      position_type === "wallet"
     );
     const uniswapItems = json.data.filter(({ attributes: { protocol } }) =>
       protocol === "Uniswap V3"
@@ -105,8 +107,10 @@ const initials = (name: string): string => {
     .toUpperCase();
 };
 
-const capitalize = (label: string): string => {
-  return label[0].toUpperCase() + label.slice(1);
+const capitalize = (label: string | undefined): string => {
+  return label && label.length > 0
+    ? label[0].toUpperCase() + label.slice(1)
+    : "";
 };
 
 function format(n: number, decimals = 2) {
@@ -167,7 +171,7 @@ const AssetItem = (props: ItemProps) => {
 };
 
 const PoolItem = (props: ItemProps) => {
-  const { type, quantity: { float: balance }, value, changes } =
+  const { position_type, quantity: { float: balance }, value, changes } =
     props.attributes;
   const { icon, symbol, name } = props.attributes.fungible_info;
   const { data: { id: chain } } = props.relationships.chain;
@@ -183,7 +187,7 @@ const PoolItem = (props: ItemProps) => {
           )}
         <div>
           <div class="font-bold">{name}</div>
-          <div>{capitalize(chain) + " · " + capitalize(type)}</div>
+          <div>{capitalize(chain) + " · " + capitalize(position_type)}</div>
         </div>
       </td>
       <td class="p-2 whitespace-nowrap">
