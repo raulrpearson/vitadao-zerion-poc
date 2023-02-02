@@ -24,7 +24,7 @@ interface PositionsResponse {
       changes: {
         "absolute_1d": number;
         "percent_1d": number;
-      };
+      } | null;
       fungible_info: {
         name: string;
         symbol: string;
@@ -150,21 +150,25 @@ const AssetItem = (props: ItemProps) => {
       </td>
       <td class="p-2 whitespace-nowrap">
         <div>{"$" + format(value, 0)}</div>
-        {changes.absolute_1d > 0
-          ? (
-            <div class="text-green-500">
-              {`+${format(changes.percent_1d)}% ($${
-                format(Math.abs(changes.absolute_1d))
-              })`}
-            </div>
-          )
-          : (
-            <div class="text-red-500">
-              {`${format(changes.percent_1d)}% ($${
-                format(Math.abs(changes.absolute_1d))
-              })`}
-            </div>
-          )}
+        {changes && (
+          <>
+            {changes.absolute_1d > 0
+              ? (
+                <div class="text-green-500">
+                  {`+${format(changes.percent_1d)}% ($${
+                    format(Math.abs(changes.absolute_1d))
+                  })`}
+                </div>
+              )
+              : (
+                <div class="text-red-500">
+                  {`${format(changes.percent_1d)}% ($${
+                    format(Math.abs(changes.absolute_1d))
+                  })`}
+                </div>
+              )}
+          </>
+        )}
       </td>
     </tr>
   );
@@ -195,21 +199,25 @@ const PoolItem = (props: ItemProps) => {
       </td>
       <td class="p-2 whitespace-nowrap">
         <div>{"$" + format(value, 0)}</div>
-        {changes.absolute_1d > 0
-          ? (
-            <div class="text-green-500">
-              {`+${format(changes.percent_1d)}% ($${
-                format(Math.abs(changes.absolute_1d))
-              })`}
-            </div>
-          )
-          : (
-            <div class="text-red-500">
-              {`${format(changes.percent_1d)}% ($${
-                format(Math.abs(changes.absolute_1d))
-              })`}
-            </div>
-          )}
+        {changes && (
+          <>
+            {changes.absolute_1d > 0
+              ? (
+                <div class="text-green-500">
+                  {`+${format(changes.percent_1d)}% ($${
+                    format(Math.abs(changes.absolute_1d))
+                  })`}
+                </div>
+              )
+              : (
+                <div class="text-red-500">
+                  {`${format(changes.percent_1d)}% ($${
+                    format(Math.abs(changes.absolute_1d))
+                  })`}
+                </div>
+              )}
+          </>
+        )}
       </td>
     </tr>
   );
